@@ -7,19 +7,47 @@ import { DownloadManager } from '@/components/student/DownloadManager';
 import { BookOpen, Video, Download, MessageSquare, Calendar } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, where } from 'firebase/firestore';
+import { useAuth } from '@/contexts/AuthContext';
+import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
+import { Loader2 } from 'lucide-react';
 
 const StudentDashboard = () => {
+    const { user, userData, loading: authLoading } = useAuth();
     const [classes, setClasses] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const q = query(collection(db, 'classes'), orderBy('createdAt', 'desc'));
+        if (!userData?.section && !authLoading) {
+            setLoading(false);
+            return;
+        }
+
+        // Filter classes by student's section
+        const q = query(
+            collection(db, 'classes'),
+            where('section', '==', userData?.section || ''),
+            orderBy('createdAt', 'desc')
+        );
+
         const unsub = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setClasses(data);
+            setLoading(false);
         });
         return () => unsub();
-    }, []);
+    }, [userData, authLoading]);
+
+    if (authLoading || loading) {
+        return (
+            <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <Header onLoginClick={() => { }} />
+                <div className="container px-4 py-8 mx-auto">
+                    <DashboardSkeleton />
+                </div>
+            </main>
+        );
+    }
 
     return (
         <ProtectedRoute allowedRoles={['student', 'cr']}>

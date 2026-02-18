@@ -6,9 +6,24 @@ import { Header } from '@/components/layout/Header';
 import { BandwidthSimulator } from '@/components/teacher/BandwidthSimulator';
 import { ClassScheduler } from '@/components/teacher/ClassScheduler';
 import { CRSelection } from '@/components/teacher/CRSelection';
+import { useAuth } from '@/contexts/AuthContext';
+import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
 import { PlusCircle, Play, Upload, BarChart3, Users } from 'lucide-react';
 
 const TeacherDashboard = () => {
+    const { userData, loading } = useAuth();
+
+    if (loading) {
+        return (
+            <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <Header onLoginClick={() => { }} />
+                <div className="container px-4 py-8 mx-auto">
+                    <DashboardSkeleton />
+                </div>
+            </main>
+        );
+    }
+
     return (
         <ProtectedRoute allowedRoles={['teacher']}>
             <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -16,10 +31,12 @@ const TeacherDashboard = () => {
                 <div className="container px-4 py-8 mx-auto">
                     <header className="flex flex-wrap items-center justify-between mb-12">
                         <div>
-                            <h1 className="text-h1 font-bold text-gray-900 dark:text-white mb-2">Teacher Panel</h1>
-                            <p className="text-body text-gray-500">Manage your classes and content.</p>
+                            <h1 className="text-h1 font-bold text-gray-900 dark:text-white mb-2 tracking-tight">
+                                Hello, Prof. {userData?.name?.split(' ')[0] || 'Teacher'}
+                            </h1>
+                            <p className="text-body text-gray-600 dark:text-gray-400">Manage your classes and content.</p>
                         </div>
-                        <button className="mt-4 sm:mt-0 flex items-center px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-500/30">
+                        <button className="mt-4 sm:mt-0 flex items-center px-6 py-4 bg-blue-600 text-white font-bold rounded-[20px] hover:bg-blue-700 transition shadow-lg shadow-blue-500/30">
                             <PlusCircle size={20} className="mr-2" />
                             Schedule New Class
                         </button>

@@ -6,6 +6,7 @@ import { UserManagement } from '@/components/admin/UserManagement';
 import { SectionManagement } from '@/components/admin/SectionManagement';
 import { TimetableManager } from '@/components/admin/TimetableManager';
 import { ClassMonitor } from '@/components/admin/ClassMonitor';
+import { MentorAssignment } from '@/components/admin/MentorAssignment';
 import { Users, GraduationCap, School, Layers } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 
@@ -42,6 +43,10 @@ const AdminDashboard = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                         <SectionManagement />
                         <TimetableManager />
+                    </div>
+
+                    <div className="mb-12">
+                        <MentorAssignment />
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">

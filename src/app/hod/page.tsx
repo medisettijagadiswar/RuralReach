@@ -4,8 +4,23 @@ import React from 'react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { Header } from '@/components/layout/Header';
 import { Users, BookOpen, BarChart3, AlertTriangle } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { DashboardSkeleton } from '@/components/common/DashboardSkeleton';
 
 const HODDashboard = () => {
+    const { loading } = useAuth();
+
+    if (loading) {
+        return (
+            <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                <Header onLoginClick={() => { }} />
+                <div className="container px-4 py-8 mx-auto">
+                    <DashboardSkeleton />
+                </div>
+            </main>
+        );
+    }
+
     return (
         <ProtectedRoute allowedRoles={['hod']}>
             <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -13,7 +28,7 @@ const HODDashboard = () => {
                 <div className="container px-4 py-8 mx-auto">
                     <header className="mb-12">
                         <h1 className="text-h1 font-bold text-gray-900 dark:text-white mb-2">HOD Dashboard</h1>
-                        <p className="text-body text-gray-500">Department Oversight & Academic Management</p>
+                        <p className="text-body text-gray-600 dark:text-gray-400 font-medium">Department Oversight & Academic Management</p>
                     </header>
 
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
